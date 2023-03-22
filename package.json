@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^2.51.4"
+		"daisyui": "^2.51.4",
+		"html5-qrcode": "^2.3.7"
 	}
 }
