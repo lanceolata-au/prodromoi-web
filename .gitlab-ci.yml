@@ -16,6 +16,7 @@ Version Up:
   only:
     - /^release.*$/
     - /^hotfix.*$/
+    - main
 
 Build Container:
   stage: Package
