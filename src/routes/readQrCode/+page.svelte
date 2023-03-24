@@ -1,4 +1,6 @@
-<script lang="ts">    
+<script lang="ts">
+    import { goto } from '$app/navigation';
+    
     // https://dev.to/myleftshoe/simple-qrbarcode-scanning-with-svelte-and-html5qrcode-1d59
     import { Html5Qrcode } from 'html5-qrcode';
     import { onMount } from 'svelte';
@@ -38,6 +40,10 @@
         console.warn(`Code scan error = ${error}`)
     }
 
+    function cancel() {
+        goto("/")
+    }
+
 </script>
 
 <div class="grid h-3/4 place-items-center">
@@ -45,7 +51,6 @@
 </div>
 <div class="grid h-1/4 place-items-center">
     <div>
-        <button class="btn btn-info">Button</button>
-        <button class="btn btn-error">Button</button>
+        <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
 </div>
