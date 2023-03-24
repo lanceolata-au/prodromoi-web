@@ -29,7 +29,6 @@ Version Up Alpha:
   only:
     - develop
 
-
 Build Container:
   stage: Package
   image: docker:20.10.19
@@ -45,6 +44,7 @@ Build Container:
   only:
     - /^release.*$/
     - /^hotfix.*$/
+    - develop
 
 # Deploy:
 #   stage: Staging
