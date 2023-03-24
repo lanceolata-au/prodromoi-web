@@ -9,14 +9,26 @@ Version Up:
   stage: Revise
   script:
     - num=0
+    - num=`expr $VERSION_MINOR + 1`
+    - echo $num
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_MINOR"
+    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_MINOR" --form "value=$num"'
+    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION" --form "0"'
+  only:
+    - /^release.*$/
+    - /^hotfix.*$/
+
+Version Up Alpha:
+  stage: Revise
+  script:
+    - num=0
     - num=`expr $VERSION_REVISION + 1`
     - echo $num
     - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION"
     - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION" --form "value=$num"'
   only:
-    - /^release.*$/
-    - /^hotfix.*$/
-    - main
+    - develop
+
 
 Build Container:
   stage: Package
