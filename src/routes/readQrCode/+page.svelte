@@ -3,6 +3,8 @@
     
     // https://dev.to/myleftshoe/simple-qrbarcode-scanning-with-svelte-and-html5qrcode-1d59
     import { Html5Qrcode } from 'html5-qrcode';
+    import type { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
+    import type { Result } from 'postcss';
     import { onMount } from 'svelte';
 
     let scanning: boolean = false;
@@ -17,7 +19,7 @@
         html5Qrcode.start(
             { facingMode: 'environment' },
             {
-                fps: 10,
+                fps: 20,
                 qrbox: { width: 250, height: 250 },
             },
             onScanSuccess,
@@ -31,13 +33,12 @@
         scanning = false
     }
 
-    function onScanSuccess(decodedText: string, decodedResult: string) {
+    function onScanSuccess(decodedText: string, decodedResult: Html5QrcodeResult) {
         alert(`Code matched = ${decodedText}`)
         console.log(decodedResult)
     }
 
-    function onScanFailure(error) {
-        console.warn(`Code scan error = ${error}`)
+    function onScanFailure(error: any) {
     }
 
     function cancel() {
