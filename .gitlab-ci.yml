@@ -24,7 +24,7 @@ Build Container:
   before_script:
     - cd ./
   script:
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
+    - docker build --no-cache . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
     - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
@@ -41,7 +41,7 @@ Build Container Beta:
   before_script:
     - cd ./
   script:
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
+    - docker build --no-cache . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
     - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION-PRE
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
