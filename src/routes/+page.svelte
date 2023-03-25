@@ -11,6 +11,12 @@
         goto("/recordAttendance")
     }
 
+    function readQR() {
+        console.log(currentMember)
+        storedMember.set(currentMember);
+        goto("/readQrCode");
+    }
+
     let currentMember: member = new member();
 
     storedMember.subscribe((member) => {
@@ -18,7 +24,10 @@
     });
 
     onMount(() => {
-        storedMember.set(JSON.parse(localStorage.getItem("storedMember")!) as member)
+        var value: string | null =  localStorage.getItem("storedMember");
+        console.log(value)
+        if (value === null || value === 'null') return;
+        storedMember.set(JSON.parse(value!) as member);
     })
 
 </script>
@@ -35,6 +44,9 @@
     {currentMember.name}
     <div>
         <button class="btn btn-info" on:click={start}>Start</button>
+    </div>
+    <div>
+        <button class="btn btn-info" on:click={readQR}>ReadQR</button>
     </div>
 </div>
 <div class="grid h-2/5 place-items-center"/>
