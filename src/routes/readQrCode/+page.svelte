@@ -52,6 +52,9 @@
 </div>
 <div class="grid h-1/4 place-items-center">
     <div>
+        <button class="btn btn-accent" on:click={cancel}>Enter Manually</button>
+    </div>
+    <div>
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
 </div>
