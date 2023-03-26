@@ -21,7 +21,7 @@
             { facingMode: 'environment' },
             {
                 fps: 20,
-                qrbox: { width: 250, height: 250 },
+                qrbox: { width: 200, height: 200 },
             },
             onScanSuccess,
             onScanFailure
@@ -48,9 +48,7 @@
 
 </script>
 
-<div class="grid h-1/5 place-items-center"/>
-
-<div class="grid h-2/5 place-items-center">
+<div class="grid h-3/5 place-items-center">
     <reader class="w-3/4 aspect-square bg-neutral flex rounded-md" id="reader"/>
 </div>
 <div class="grid h-1/5 place-items-center">
