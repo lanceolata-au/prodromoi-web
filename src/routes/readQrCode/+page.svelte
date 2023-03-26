@@ -9,6 +9,7 @@
 
     let scanning: boolean = false;
     let html5Qrcode: Html5Qrcode;
+    let manualCode: string = "";
 
     onMount( () => {
         html5Qrcode = new Html5Qrcode('reader');
@@ -47,13 +48,26 @@
 
 </script>
 
-<div class="grid h-3/4 place-items-center">
+<div class="grid h-1/5 place-items-center"/>
+
+<div class="grid h-2/5 place-items-center">
     <reader class="w-3/4 aspect-square bg-neutral flex rounded-md" id="reader"/>
 </div>
-<div class="grid h-1/4 place-items-center">
-    <div>
-        <button class="btn btn-accent" on:click={cancel}>Enter Manually</button>
+<div class="grid h-1/5 place-items-center">
+    <div class="grid place-items-center">
+        <div class="form-control mb-3">
+            <input 
+                type="text" 
+                placeholder="Manual Code" 
+                class="input input-bordered input-secondary" 
+                bind:value={manualCode}/>
+        </div>
+        <div>
+            <button class="btn btn-accent" on:click={cancel}>Submit Manual Code</button>
+        </div>
     </div>
+</div>
+<div class="grid h-1/5 place-items-center">
     <div>
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>

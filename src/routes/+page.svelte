@@ -9,6 +9,8 @@
 
     let memberSaved: boolean = false;
 
+    let loading:  boolean = true;
+
     function start() {
         console.log(currentMember)
         storedMember.set(currentMember);
@@ -43,19 +45,27 @@
         var value: string | null =  localStorage.getItem("storedMember");
         console.log(value)
         if (value === null || value === 'null') {
+            loading = false;
             return;
         }
         storedMember.set(JSON.parse(value!) as member);
         memberSaved = true;
+        loading = false;
     })
 
 
 </script>
 
+{#if !loading}
 <div class="grid h-1/5 place-items-center"/>
 <div class="grid h-2/5 place-items-center">
     {#if !memberSaved}
-        <div>
+        <div class="grid place-items-center">
+            <h1 class="text-xl text-primary-content">Welcome to Scouts Tasmania</h1>
+            <h1 class="text-xl text-primary-content">Attendance Recorder</h1>
+            <hr class="mb-10">
+            <h1 class="text-xl text-primary-content">First we need to know a little about you</h1>
+            <hr class="mb-10">
             <div class="form-control mb-3">
                 <input 
                     type="text" 
@@ -72,7 +82,7 @@
             </div>
         </div>
     {:else}
-        <div>
+        <div class="grid place-items-center">
             <h1 class="text-4xl text-primary-content">Welcome back</h1>
             <br>
             <h1 class="text-4xl text-primary-content">{currentMember.name}</h1>
@@ -80,19 +90,22 @@
     {/if}
 </div>
 <div class="grid h-1/5 place-items-center">
-    {#if !memberSaved}
-        <div>
-            <button class="btn btn-info" on:click={saveDetails}>Save</button> 
-        </div>
-    {:else}
-        <div>
-            <button class="btn btn-accent" on:click={readQR}>Scan In</button> 
-        </div>
-        <br>
-        <div>
-            <button class="btn btn-neutral" on:click={changeDetails}>Change Details</button> 
-        </div>
-    {/if}
+    <div class="grid place-items-center">
+        {#if !memberSaved}
+            <div>
+                <button class="btn btn-info" on:click={saveDetails}>Save to my phone</button> 
+            </div>
+        {:else}
+            <div>
+                <button class="btn btn-accent" on:click={readQR}>Scan In</button> 
+            </div>
+            <br>
+            <div>
+                <button class="btn btn-neutral" on:click={changeDetails}>Change Details</button> 
+            </div>
+        {/if}
+    </div>
 </div>
 
 <div class="grid h-1/5 place-items-center"/>
+{/if}
