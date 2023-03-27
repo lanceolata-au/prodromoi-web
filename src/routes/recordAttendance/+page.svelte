@@ -31,57 +31,69 @@
 
 </script>
 
-<div class="overflow-x-auto w-full">
+<div class="overflow-y-scroll h-[90%]">
     <table class="table w-full">
-    <!-- head -->
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>            
-                <label>
-                <input type="checkbox" class="checkbox" />
-                </label>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- row 1 -->
-        <tr>
-            <td>
-                <div class="flex items-center space-x-3">
-                    <div class="w-full">
-                        <div class="font-bold pl-2 pr-2">{currentMember.name}</div>
-                    </div>
-                </div>
-            </td>
-            <th>
-                <label>
-                    <input type="checkbox" class="checkbox" disabled checked/>
-                </label>
-            </th>
-        </tr>
-        {#each attendances as attendance}
-        <tr>
-            <td>
-                <div class="flex items-center space-x-3">
-                    <div class="w-full">
-                        <input type="text" placeholder="Type here" class="input input-bordered input-md w-full max-w-xs" />
-                    </div>
-                </div>
-            </td>
-            <th>
-                <label>
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>            
+                    <label>
                     <input type="checkbox" class="checkbox" />
-                </label>
-            </th>
-        </tr>
-        {/each}
-        <tr>
-            <td colspan="2" >
-                <div class="grid place-items-center">
-                    <button class="btn btn-sm btn-secondary" on:click={addAttendances}>Add</button>
-                </div>
-            </td>
-        </tr>
-    </table>
+                    </label>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- row 1 -->
+            <tr>
+                <td>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-full">
+                            <div class="font-bold pl-2 pr-2">{currentMember.name}</div>
+                        </div>
+                    </div>
+                </td>
+                <th>
+                    <label>
+                        <input type="checkbox" class="checkbox" disabled checked/>
+                    </label>
+                </th>
+            </tr>
+            {#each attendances as attendance}
+            <tr>
+                <td>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-full">
+                            <input type="text" placeholder="Type here" class="input input-bordered input-md w-full max-w-xs" />
+                        </div>
+                    </div>
+                </td>
+                <th>
+                    <label>
+                        <input type="checkbox" class="checkbox" />
+                    </label>
+                </th>
+            </tr>
+            {/each}
+            <tr>
+                <td colspan="2" >
+                    <div class="grid place-items-center">
+                        <button class="btn btn-sm btn-secondary" on:click={addAttendances}>Add</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
+<div class="h-[10%] w-full grid grid-cols-4 gap-4">
+    <div></div>
+    <div class="grid place-items-center">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+    <div class="grid place-items-center">
+        <button class="btn btn-error" on:click={cancel}>Cancel</button>
+    </div>
+    <div></div>
+</div>
+
+
