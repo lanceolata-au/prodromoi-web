@@ -42,6 +42,10 @@
     function onScanFailure(error: any) {
     }
 
+    function startRecording() {
+        goto("/recordAttendance")
+    }
+
     function cancel() {
         goto("/")
     }
@@ -61,7 +65,7 @@
                 bind:value={manualCode}/>
         </div>
         <div>
-            <button class="btn btn-accent" on:click={cancel}>Submit Manual Code</button>
+            <button class="btn btn-accent" on:click={startRecording}>Submit Manual Code</button>
         </div>
     </div>
 </div>
