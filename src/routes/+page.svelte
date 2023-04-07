@@ -61,10 +61,10 @@
 <div class="grid h-2/5 place-items-center">
     {#if !memberSaved}
         <div class="grid place-items-center">
-            <h1 class="text-xl text-primary-content">Welcome to Scouts Tasmania</h1>
-            <h1 class="text-xl text-primary-content">Attendance Recorder</h1>
+            <h1 class="text-xl text-neutral">Welcome to Scouts Tasmania</h1>
+            <h1 class="text-xl text-neutral">Attendance Recorder</h1>
             <hr class="mb-10">
-            <h1 class="text-xl text-primary-content">First we need to know a little about you</h1>
+            <h1 class="text-xl text-neutral">First we need to know a little about you</h1>
             <hr class="mb-10">
             <div class="form-control mb-3">
                 <input 
@@ -83,9 +83,9 @@
         </div>
     {:else}
         <div class="grid place-items-center">
-            <h1 class="text-4xl text-primary-content">Welcome back</h1>
+            <h1 class="text-4xl text-neutral">Welcome back</h1>
             <br>
-            <h1 class="text-4xl text-primary-content">{currentMember.name}</h1>
+            <h1 class="text-4xl text-neutral">{currentMember.name}</h1>
         </div>
     {/if}
 </div>

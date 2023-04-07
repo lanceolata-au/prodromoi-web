@@ -9,6 +9,10 @@ include:
 GitVersion:
   stage: Revise
   extends: .gitversion_function
+  only:
+    - /^release.*$/
+    - /^hotfix.*$/
+    - develop
 
 Build Container:
   stage: Build
