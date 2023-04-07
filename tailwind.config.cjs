@@ -5,20 +5,21 @@ module.exports = {
     extend: {},
   },
   dasisyui: {
-    themes : [
+    themes : [ 
       {
-        scoutstas: {
-          "primary": "#009059",
-          "secondary": "#005a37",
-          "accent": "#95cb6e",
-          "neutral": "#3d5c92",
+        "scoutstas": {
+          /**primary: "#009059",*/
+          primary: "red",
+          secondary: "#005a37",
+          accent: "#95cb6e",
+          neutral: "#3d5c92",
           "base-100": "#1a416f",
-          "info": "#008f88",
-          "success": "#79b143",
-          "warning": "#f3b819",
-          "error": "#ea594b"
-        },
-      },
+          info: "#008f88",
+          success: "#79b143",
+          warning: "#f3b819",
+          error: "#ea594b"
+        }
+      }
     ]
   },
   plugins: [

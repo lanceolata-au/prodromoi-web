@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    
+
     // https://dev.to/myleftshoe/simple-qrbarcode-scanning-with-svelte-and-html5qrcode-1d59
     import { Html5Qrcode } from 'html5-qrcode';
     import type { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
@@ -21,7 +21,7 @@
             { facingMode: 'environment' },
             {
                 fps: 20,
-                qrbox: { width: 200, height: 200 },
+                qrbox: { width: 300, height: 300 },
             },
             onScanSuccess,
             onScanFailure
@@ -74,3 +74,10 @@
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
 </div>
+
+
+<style>
+    reader {
+        max-width: 300px;
+    }
+</style>

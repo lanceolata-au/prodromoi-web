@@ -8,9 +8,11 @@
 
     let currentMember: member = new member();
 
-    let attendances: memberAttendance[] = [new memberAttendance()];
+    let attendances: memberAttendance[] = [];
 
-    let allChecked: boolean = false;
+    let allChecked: boolean = true;
+
+    const sleep = (ms: number) => new Promise(f => setTimeout(f, ms));
 
     storedMember.subscribe((member) => {
         currentMember = member;
@@ -18,7 +20,14 @@
 
     function addAttendances() {
         var attendance = new memberAttendance();
+        attendance.present = true;
         attendances= [...attendances, attendance];
+    }
+
+    function clearAttendances() {
+        var attendance = new memberAttendance();
+        attendance.present = true;
+        attendances= [attendance];
     }
 
     function cancel() {
@@ -29,9 +38,29 @@
         currentMember = member;
     })
 
+    onMount(() => {
+        addAttendances();
+    });
+
+    let listview: Element;
+
+    const scrollToBottom = async (node: Element) => {
+        await sleep(10);
+        node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+    }; 
+
+    $: if(listview && attendances) {
+        scrollToBottom(listview);
+    }
+
+    // $: allChecked, attendances.forEach(attendance => {
+    //         attendance.present = false;
+    //         console.log(attendances)
+    //     }), attendances = attendances;
+
 </script>
 
-<div class="overflow-y-scroll h-[90%]">
+<div bind:this={listview} class="overflow-y-scroll h-[90%] mt-3">
     <table class="table w-full">
         <!-- head -->
         <thead>
@@ -39,7 +68,7 @@
                 <th>Full Name</th>
                 <th>            
                     <label>
-                    <input type="checkbox" class="checkbox" />
+                    <input type="checkbox" class="checkbox" bind:checked={allChecked}/>
                     </label>
                 </th>
             </tr>
@@ -50,7 +79,7 @@
                 <td>
                     <div class="flex items-center space-x-3">
                         <div class="w-full">
-                            <div class="font-bold pl-2 pr-2">{currentMember.name}</div>
+                            <div class="font-bold pl-1 pr-1">{currentMember.name}</div>
                         </div>
                     </div>
                 </td>
@@ -71,29 +100,27 @@
                 </td>
                 <th>
                     <label>
-                        <input type="checkbox" class="checkbox" />
+                        <input type="checkbox" class="checkbox" bind:checked={attendance.present}/>
                     </label>
                 </th>
             </tr>
             {/each}
-            <tr>
-                <td colspan="2" >
-                    <div class="grid place-items-center">
-                        <button class="btn btn-sm btn-secondary" on:click={addAttendances}>Add</button>
-                    </div>
-                </td>
-            </tr>
         </table>
 </div>
-<div class="h-[10%] w-full grid grid-cols-4 gap-4">
-    <div></div>
-    <div class="grid place-items-center">
-        <button class="btn btn-primary">Submit</button>
-    </div>
+<div class="h-[10%] w-full grid grid-cols-4 gap-1">
     <div class="grid place-items-center">
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
-    <div></div>
+    <div class="grid place-items-center">
+        <button class="btn btn-warning" on:click={clearAttendances}>Clear</button>
+    </div>
+    <div class="grid place-items-center">
+        <button class="btn btn-primary" on:click={addAttendances}>Add</button>
+    </div>
+    <div class="grid place-items-center">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+
 </div>
 
 
