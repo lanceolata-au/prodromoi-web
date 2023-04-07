@@ -8,8 +8,6 @@ include:
 
 GitVersion:
   stage: Revise
-  needs: 
-    - Test Architecture
   extends: .gitversion_function
 
 Build Container:
