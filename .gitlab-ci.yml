@@ -41,7 +41,7 @@ Pre-Release:
     name: 'Pre-Release $GitVersion_FullSemVer'
     tag_name: $GitVersion_FullSemVer
     description: |
-      New version of Prodromoi backend services
+      New version of Prodromoi web
       
       $GitVersion_InformationalVersion
   only:
@@ -59,7 +59,7 @@ Release:
     name: 'Release $GitVersion_FullSemVer'
     tag_name: $GitVersion_FullSemVer
     description: |
-      New version of Prodromoi backend services
+      New version of Prodromoi web
 
       $GitVersion_InformationalVersion
   only:
