@@ -4,7 +4,7 @@ stages:
     - Release
 
 include:
-  - local: '/build/gitversion-ci-cd-plugin-extension.gitlab-ci.yml' 
+  - local: '/cicd/gitversion-ci-cd-plugin-extension.gitlab-ci.yml' 
 
 GitVersion:
   stage: Revise
