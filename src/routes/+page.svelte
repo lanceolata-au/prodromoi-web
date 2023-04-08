@@ -41,11 +41,11 @@
 <div class="grid h-2/5 place-items-center">
     {#if !memberSaved}
         <div class="grid place-items-center">
-            <h1 class="text-xl text-neutral">Welcome to Scouts Tasmania</h1>
-            <h1 class="text-xl text-neutral">Attendance Recorder</h1>
-            <hr class="mb-10">
-            <h1 class="text-xl text-neutral">First we need to know a little about you</h1>
-            <hr class="mb-10">
+            <h1 class="text-xl text-neutral bg-neutral-content/90 p-1 rounded">Welcome to Scouts Tasmania</h1>
+            <h1 class="text-xl text-neutral bg-neutral-content/90 p-1 rounded">Attendance Recorder</h1>
+            <hr class="mb-2">
+            <h1 class="text-xl text-neutral bg-neutral-content/90 p-1 rounded">First we need to know a little about you</h1>
+            <hr class="mb-6">
             <div class="form-control mb-3">
                 <input 
                     type="text" 
@@ -63,9 +63,9 @@
         </div>
     {:else}
         <div class="grid place-items-center">
-            <h1 class="text-4xl text-neutral">Welcome back</h1>
-            <br>
-            <h1 class="text-4xl text-neutral">{currentMember.name}</h1>
+            <h1 class="text-4xl text-neutral bg-neutral-content/90 p-1 rounded">Welcome back</h1>
+            <br class="m-2">
+            <h1 class="text-2xl text-neutral bg-neutral-content/90 p-1 rounded">{currentMember.name}</h1>
         </div>
     {/if}
 </div>
