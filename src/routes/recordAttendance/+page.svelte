@@ -1,13 +1,15 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { AttendanceApi } from "$lib/api/AttendanceApi";
+    import type { AttendanceApi } from "$lib/api/AttendanceApi";
     import { member } from "$lib/model/member";
     import { memberAttendance } from "$lib/model/memberAttendance";
     import { quickAttendance } from "$lib/model/quickAttendance";
+    import  { ProdromoiApi } from "$lib/prodromoiApi";
     import { storedMember, apiLoading } from "$lib/stores";
     import { onMount } from "svelte";
 
-    var attendanceApi: AttendanceApi = new AttendanceApi(null,"localhost:7227");
+    var api: ProdromoiApi = new ProdromoiApi();
+    var attendanceApi: AttendanceApi = api.attendance
     let currentMember: member = new member();
     let attendances: memberAttendance[] = [];
     let allChecked: boolean = true;
