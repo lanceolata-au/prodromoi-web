@@ -8,7 +8,7 @@ module.exports = {
     themes : [ 
       {
         "scoutstas": {
-          ...require('daisyui/src/colors/themes')['[data-theme=light]'],
+          ...require('daisyui/src/colors/themes')['[data-theme=garden]'],
           primary: "#009059",
           secondary: "#005a37",
           accent: "#95cb6e",

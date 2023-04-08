@@ -73,7 +73,7 @@
     <div class="grid place-items-center">
         {#if !memberSaved}
             <div>
-                <button class="btn btn-info" on:click={saveDetails}>Save to my phone</button> 
+                <button class="btn btn-neutral" on:click={saveDetails}>Save to my phone</button> 
             </div>
         {:else}
             <div>

@@ -66,7 +66,7 @@
 
 </script>
 
-<div bind:this={listview} class="overflow-y-scroll h-[90%] mt-3">
+<div bind:this={listview} class="overflow-y-scroll h-[80%] mt-3">
     <table class="table w-full">
         <!-- head -->
         <thead>
@@ -117,20 +117,20 @@
             {/each}
         </table>
 </div>
-<div class="h-[10%] w-full grid grid-cols-4 gap-1 pb-4 pl-1 pr-1">
-    <div class="grid place-items-center">
-        <button class="btn btn-error" on:click={cancel}>Cancel</button>
-    </div>
+<div class="h-[20%] w-full grid grid-cols-2 gap-1 pb-4 pl-1 pr-1 bg-base-200/80">
     <div class="grid place-items-center">
         <button class="btn btn-warning" on:click={clearAttendances}>Clear</button>
     </div>
     <div class="grid place-items-center">
-        <button class="btn btn-primary" on:click={addAttendances}>Add</button>
+        <button class="btn btn-accent" on:click={addAttendances}>Add</button>
     </div>
+    <div class="grid place-items-center">
+        <button class="btn btn-error" on:click={cancel}>Cancel</button>
+    </div>
+
     <div class="grid place-items-center">
         <button class="btn btn-primary" on:click={submit}>Submit</button>
     </div>
-
 </div>
 
 

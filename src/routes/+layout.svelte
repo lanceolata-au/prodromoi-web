@@ -33,7 +33,7 @@
 {/if}
 
 <slot />
-<div class="absolute top-0 left-0 w-2/3 bg-transparent -z-50">
+<div class="absolute top-0 left-0 w-2/3 w-full bg-transparent -z-50">
     <img src="bg/tl.png"/>
 </div>
 <div class="absolute bottom-0 right-0 w-2/3 bg-transparent -z-50">
