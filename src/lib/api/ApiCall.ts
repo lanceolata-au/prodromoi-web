@@ -1,16 +1,13 @@
 import { ApiResult } from "./ApiResult";
 
 import { writable, type Writable } from 'svelte/store';
+import { apiLoading } from "../stores";
 
 export class ApiCall {
 
     readonly _bearerToken: string| null;
     readonly _httpHost: string;
     _headers = {};
-
-    // TODO make this work correctly. 
-    // This may need to go into a store of some kind
-    public isApiCallLoading = writable(true);
     
     constructor(bearerToken: string | null = null, httpHost: string) {
         
@@ -40,7 +37,7 @@ export class ApiCall {
 
     async getEndpoint<T extends ApiResult>(endpoint: string) {
         
-        this.isApiCallLoading.set(true);
+        apiLoading.set(true);
 
         let requestOptions = {
             headers: new Headers(this._headers)
@@ -61,10 +58,42 @@ export class ApiCall {
             }); 
         }
 
-        this.isApiCallLoading.set(false);
+        apiLoading.set(false);
 
         return apiResult;
 
     }
+
+    async postEndpoint<R extends ApiResult>(endpoint: string, body: any) {
+        
+        apiLoading.set(true);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: new Headers(this._headers),
+            body: JSON.stringify(body)
+        }
+
+        let apiResult: ApiResult = new ApiResult();
+
+        let fullEndpoint = "https://" + this._httpHost + "/" + endpoint
+
+        let rawResult = await fetch(fullEndpoint, requestOptions)
+
+        apiResult.resultCode = rawResult.status;
+        apiResult.resultHeaders = rawResult.headers;
+
+        if (apiResult.resultCode == 200) {
+            await rawResult.json().then(data => {
+                apiResult.resultBody = data as R;
+            }); 
+        }
+
+        apiLoading.set(false);
+
+        return apiResult;
+
+    }
+
 
 }

@@ -2,7 +2,7 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { member } from "$lib/model/member";
-    import { storedMember } from "$lib/stores";
+    import { storedMember, hasStoredMember } from "$lib/stores";
     import { onMount } from "svelte";
 
     let currentMember: member = new member();
@@ -11,48 +11,28 @@
 
     let loading:  boolean = true;
 
-    function start() {
-        console.log(currentMember)
-        storedMember.set(currentMember);
-        //goto("/readQrCode");
-        goto("/recordAttendance")
-    }
-
     function readQR() {
         goto("/readQrCode");
     }
 
     function changeDetails() {
-        memberSaved = false;
+        hasStoredMember.set(false)
         localStorage.removeItem("storedMember")
     }
 
     function saveDetails() {
         storedMember.set(currentMember);
-        memberSaved = true;
+        hasStoredMember.set(true);
     }
-
-    page.subscribe( (value) => {
-        console.log(value.params['test'])
-    })
-
 
     storedMember.subscribe((member) => {
         currentMember = member;
     });
 
-    onMount(() => {
-        var value: string | null =  localStorage.getItem("storedMember");
-        console.log(value)
-        if (value === null || value === 'null') {
-            loading = false;
-            return;
-        }
-        storedMember.set(JSON.parse(value!) as member);
-        memberSaved = true;
+    hasStoredMember.subscribe((result) => {
+        memberSaved = result;
         loading = false;
-    })
-
+    });
 
 </script>
 
@@ -78,7 +58,7 @@
                     type="tel" 
                     placeholder="Phone Number" 
                     class="input input-bordered input-secondary" 
-                    bind:value={currentMember.phoneNo}/>
+                    bind:value={currentMember.phoneNumber}/>
             </div>
         </div>
     {:else}
