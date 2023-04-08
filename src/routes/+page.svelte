@@ -16,7 +16,9 @@
 
     function changeDetails() {
         hasStoredMember.set(false)
-        localStorage.removeItem("storedMember")
+        localStorage.removeItem("storedMember");
+        storedMember.set(new member());
+        localStorage.removeItem("storedMember");
     }
 
     function saveDetails() {
