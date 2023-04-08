@@ -3,7 +3,6 @@
     import { page } from "$app/stores";
     import { member } from "$lib/model/member";
     import { storedMember, hasStoredMember } from "$lib/stores";
-    import { onMount } from "svelte";
 
     let currentMember: member = new member();
 

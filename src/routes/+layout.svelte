@@ -8,6 +8,12 @@
 
     onMount(() => {
         
+        storedMember.subscribe((member) => {
+            console.log(member)
+            if (member.name == "") return;
+            localStorage.setItem("storedMember", JSON.stringify(member))
+        });
+
         var value = localStorage.getItem("storedMember");
         if (value === null || value === 'null') {
             hasStoredMember.set(false)
@@ -16,10 +22,6 @@
         
         storedMember.set(JSON.parse(value) as member);
         hasStoredMember.set(true)
-    
-        storedMember.subscribe((member) => {
-            localStorage.setItem("storedMember", JSON.stringify(member))
-        });
 
         apiLoading.set(false)
     })
