@@ -20,12 +20,12 @@ Build Container:
   needs:
     - GitVersion
   before_script:
-    - echo "$GitVersion_FullSemVer"
+    - echo "$GitVersion_SemVer"
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --name multiarch.web --driver docker-container --config ./ci/config.toml
     - docker buildx build --provenance false --builder multiarch.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:latest .
-    - docker buildx build --provenance false --builder multiarch.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:$GitVersion_FullSemVer .
+    - docker buildx build --provenance false --builder multiarch.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:$GitVersion_SemVer .
   after_script:
     - docker buildx rm multiarch.web 
   only:
@@ -40,10 +40,10 @@ Pre-Release:
     - GitVersion
     - Build Container
   script:
-    - echo "Pre-release $GitVersion_FullSemVer"
+    - echo "Pre-release $GitVersion_SemVer"
   release:
-    name: 'Pre-Release $GitVersion_FullSemVer'
-    tag_name: $GitVersion_FullSemVer
+    name: 'Pre-Release $GitVersion_SemVer'
+    tag_name: $GitVersion_SemVer
     description: |
       New version of Prodromoi web
       
@@ -58,10 +58,10 @@ Release:
     - GitVersion
     - Build Container
   script:
-    - echo "Pre-release $GitVersion_FullSemVer"
+    - echo "Pre-release $GitVersion_SemVer"
   release:
-    name: 'Release $GitVersion_FullSemVer'
-    tag_name: $GitVersion_FullSemVer
+    name: 'Release $GitVersion_SemVer'
+    tag_name: $GitVersion_SemVer
     description: |
       New version of Prodromoi web
 
