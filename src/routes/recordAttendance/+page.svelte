@@ -1,15 +1,15 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { AttendanceApi } from "$lib/api/AttendanceApi";
     import { member } from "$lib/model/member";
     import { memberAttendance } from "$lib/model/memberAttendance";
-    import { storedMember } from "$lib/stores";
-    import Attendance from "$lib/widgets/attendance.svelte";
+    import { quickAttendance } from "$lib/model/quickAttendance";
+    import { storedMember, apiLoading } from "$lib/stores";
     import { onMount } from "svelte";
 
+    var attendanceApi: AttendanceApi = new AttendanceApi(null,"localhost:7227");
     let currentMember: member = new member();
-
     let attendances: memberAttendance[] = [];
-
     let allChecked: boolean = true;
 
     const sleep = (ms: number) => new Promise(f => setTimeout(f, ms));
@@ -26,7 +26,7 @@
 
     function clearAttendances() {
         var attendance = new memberAttendance();
-        attendance.present = true;
+        attendance.present = false;
         attendances= [attendance];
     }
 
@@ -34,12 +34,21 @@
         goto("/")
     }
 
+    function submit() {
+        apiLoading.set(true)
+        let attendance: quickAttendance = new quickAttendance();
+        attendance.recordingAdult = currentMember;
+        attendance.attendances = attendances;
+
+        attendanceApi.postQuickAttendance(attendance);
+    }
+
     storedMember.subscribe(member => {
         currentMember = member;
     })
 
     onMount(() => {
-        addAttendances();
+        clearAttendances();
     });
 
     let listview: Element;
@@ -52,11 +61,6 @@
     $: if(listview && attendances) {
         scrollToBottom(listview);
     }
-
-    // $: allChecked, attendances.forEach(attendance => {
-    //         attendance.present = false;
-    //         console.log(attendances)
-    //     }), attendances = attendances;
 
 </script>
 
@@ -94,7 +98,11 @@
                 <td>
                     <div class="flex items-center space-x-3">
                         <div class="w-full">
-                            <input type="text" placeholder="Type here" class="input input-bordered input-md w-full max-w-xs" />
+                            <input 
+                                type="text" 
+                                placeholder="Type here" 
+                                class="input input-bordered input-md w-full max-w-xs" 
+                                bind:value="{attendance.member.name}"/>
                         </div>
                     </div>
                 </td>
@@ -107,7 +115,7 @@
             {/each}
         </table>
 </div>
-<div class="h-[10%] w-full grid grid-cols-4 gap-1">
+<div class="h-[10%] w-full grid grid-cols-4 gap-1 pb-4 pl-1 pr-1">
     <div class="grid place-items-center">
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
@@ -118,7 +126,7 @@
         <button class="btn btn-primary" on:click={addAttendances}>Add</button>
     </div>
     <div class="grid place-items-center">
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" on:click={submit}>Submit</button>
     </div>
 
 </div>
