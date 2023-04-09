@@ -2,6 +2,7 @@ stages:
     - Revise
     - Build
     - Release
+    - Clean
 
 include:
   - local: '/ci/gitversion-ci-cd-plugin-extension.gitlab-ci.yml' 
@@ -71,4 +72,17 @@ Release:
 
       $GitVersion_InformationalVersion
   only:
+    - main
+
+Clean:
+  stage: Clean
+  timeout: 30m
+  needs:
+    - Build Container
+  script:
+    docker system prune -a --force
+  only:
+    - develop
+    - /^release.*$/
+    - /^hotfix.*$/
     - main
