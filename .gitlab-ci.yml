@@ -13,6 +13,7 @@ GitVersion:
     - /^release.*$/
     - /^hotfix.*$/
     - develop
+    - main
 
 Build Container:
   stage: Build
@@ -23,15 +24,16 @@ Build Container:
     - echo "$GitVersion_SemVer"
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker buildx create --name multiarch.$CI_PIPELINE_IID.web --driver docker-container --config ./ci/config.toml
-    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:latest .
-    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:$GitVersion_SemVer .
+    - docker buildx create --name multiarch.$CI_PIPELINE_IID.$CI_PIPELINE_IID.web --driver docker-container --config ./ci/config.toml
+    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:latest .
+    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:$GitVersion_SemVer .
   after_script:
-    - docker buildx rm multiarch.$CI_PIPELINE_IID.web 
+    - docker buildx rm multiarch.$CI_PIPELINE_IID.$CI_PIPELINE_IID.web 
   only:
     - /^release.*$/
     - /^hotfix.*$/
     - develop
+    - main
 
 Pre-Release:
   stage: Release
@@ -50,6 +52,8 @@ Pre-Release:
       $GitVersion_InformationalVersion
   only:
     - develop
+    - /^release.*$/
+    - /^hotfix.*$/
 
 Release:
   stage: Release
@@ -67,5 +71,4 @@ Release:
 
       $GitVersion_InformationalVersion
   only:
-    - /^release.*$/
-    - /^hotfix.*$/
+    - main
