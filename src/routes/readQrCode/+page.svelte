@@ -5,16 +5,20 @@
     import { Html5Qrcode } from 'html5-qrcode';
     import type { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
     import type { Result } from 'postcss';
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
     let scanning: boolean = false;
     let html5Qrcode: Html5Qrcode;
     let manualCode: string = "";
 
-    onMount( () => {
+    onMount(() => {
         html5Qrcode = new Html5Qrcode('reader');
         start();
     });
+
+    onDestroy(() => {
+        stop();
+    })
 
     function start() {
         html5Qrcode.start(
@@ -30,7 +34,9 @@
     }
 
     async function stop() {
-        await html5Qrcode.stop()
+        if (html5Qrcode !== null) {
+            await html5Qrcode?.stop()
+        }
         scanning = false
     }
 
