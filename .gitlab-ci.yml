@@ -1,84 +1,71 @@
-image: docker:20.10.19
-
 stages:
     - Revise
-    - Package
-    - Staging
+    - Build
+    - Release
 
-Version Up:
+include:
+  - local: '/ci/gitversion-ci-cd-plugin-extension.gitlab-ci.yml' 
+
+GitVersion:
   stage: Revise
-  script:
-    - num=0
-    - num=`expr $VERSION_MINOR + 1`
-    - echo $num
-    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_MINOR"
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_MINOR" --form "value=$num"'
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION" --form "0"'
+  extends: .gitversion_function
   only:
     - /^release.*$/
     - /^hotfix.*$/
-
-Version Up Beta:
-  stage: Revise
-  script:
-    - num=0
-    - num=`expr $VERSION_REVISION + 1`
-    - echo $num
-    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION"
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/VERSION_REVISION" --form "value=$num"'
-  only:
     - develop
 
 Build Container:
-  stage: Package
-  image: docker:20.10.19
+  stage: Build
+  timeout: 30m
+  needs:
+    - GitVersion
   before_script:
-    - cd ./
+    - echo "$GitVersion_SemVer"
   script:
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/WODAN_IMAGE" --form "value=$CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION"'
+    - docker buildx create --name multiarch.$CI_PIPELINE_IID.web --driver docker-container --config ./ci/config.toml
+    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:latest .
+    - docker buildx build --provenance false --builder multiarch.$CI_PIPELINE_IID.web --platform linux/amd64,linux/arm64 --push -t $CI_REGISTRY/$CI_PROJECT_PATH/web:$GitVersion_SemVer .
+  after_script:
+    - docker buildx rm multiarch.$CI_PIPELINE_IID.web 
   only:
     - /^release.*$/
     - /^hotfix.*$/
+    - develop
 
-
-Build Container Beta:
-  stage: Package
-  image: docker:20.10.19
-  before_script:
-    - cd ./
+Pre-Release:
+  stage: Release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - GitVersion
+    - Build Container
   script:
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
-    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION-PRE
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION-PRE
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/WODAN_IMAGE" --form "value=$CI_REGISTRY/$CI_PROJECT_PATH/prodromoi-web:$VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION-PRE"'
+    - echo "Pre-release $GitVersion_SemVer"
+  release:
+    name: 'Pre-Release $GitVersion_SemVer'
+    tag_name: $GitVersion_SemVer
+    description: |
+      New version of Prodromoi web
+      
+      $GitVersion_InformationalVersion
   only:
     - develop
 
-# Deploy:
-#   stage: Staging
-#   needs: ["Build Container"]
-#   image: docker/compose:latest
-#   tags:
-#     - zeke
-#   before_script:
-#     - cd ./deploy/
-#   script:
-#     - touch .env
-#     - echo "WODAN_IMAGE=$WODAN_IMAGE" >> .env
-#     - echo "WODAN_WEB_HOST=$WODAN_WEB_HOST" >> .env
-#     - cat .env
-#     - docker-compose -f ./stack.yaml config > ./swarm-config.yaml
-#     - docker stack deploy --with-registry-auth -c swarm-config.yaml wodan_web_staging
-#   only:
-#     - /^release.*$/
-#     - /^hotfix.*$/
-#   environment:
-#     name: staging
-#     url: https://wodan.zeryter.xyz
+Release:
+  stage: Release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - GitVersion
+    - Build Container
+  script:
+    - echo "Pre-release $GitVersion_SemVer"
+  release:
+    name: 'Release $GitVersion_SemVer'
+    tag_name: $GitVersion_SemVer
+    description: |
+      New version of Prodromoi web
+
+      $GitVersion_InformationalVersion
+  only:
+    - /^release.*$/
+    - /^hotfix.*$/

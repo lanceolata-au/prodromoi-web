@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    
+
     // https://dev.to/myleftshoe/simple-qrbarcode-scanning-with-svelte-and-html5qrcode-1d59
     import { Html5Qrcode } from 'html5-qrcode';
     import type { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
@@ -9,6 +9,7 @@
 
     let scanning: boolean = false;
     let html5Qrcode: Html5Qrcode;
+    let manualCode: string = "";
 
     onMount( () => {
         html5Qrcode = new Html5Qrcode('reader');
@@ -20,7 +21,7 @@
             { facingMode: 'environment' },
             {
                 fps: 20,
-                qrbox: { width: 250, height: 250 },
+                qrbox: { width: 300, height: 300 },
             },
             onScanSuccess,
             onScanFailure
@@ -41,17 +42,42 @@
     function onScanFailure(error: any) {
     }
 
+    function startRecording() {
+        goto("/recordAttendance")
+    }
+
     function cancel() {
         goto("/")
     }
 
 </script>
 
-<div class="grid h-3/4 place-items-center">
+<div class="grid h-3/5 place-items-center">
     <reader class="w-3/4 aspect-square bg-neutral flex rounded-md" id="reader"/>
 </div>
-<div class="grid h-1/4 place-items-center">
+<div class="grid h-1/5 place-items-center">
+    <div class="grid place-items-center">
+        <div class="form-control mb-3">
+            <input 
+                type="text" 
+                placeholder="Manual Code" 
+                class="input input-bordered input-secondary" 
+                bind:value={manualCode}/>
+        </div>
+        <div>
+            <button class="btn btn-accent" on:click={startRecording}>Submit Manual Code</button>
+        </div>
+    </div>
+</div>
+<div class="grid h-1/5 place-items-center">
     <div>
         <button class="btn btn-error" on:click={cancel}>Cancel</button>
     </div>
 </div>
+
+
+<style>
+    reader {
+        max-width: 300px;
+    }
+</style>
