@@ -7,26 +7,19 @@
     import Loading from "$lib/widgets/loading.svelte";
 
     onMount(() => {
-        
         storedMember.subscribe((member) => {
-            console.log(member)
             if (member.name == "") return;
             localStorage.setItem("storedMember", JSON.stringify(member))
         });
-
         var value = localStorage.getItem("storedMember");
         if (value === null || value === 'null') {
             hasStoredMember.set(false)
             return;
         }
-        
         storedMember.set(JSON.parse(value) as member);
         hasStoredMember.set(true)
-
         apiLoading.set(false)
     })
-
-
 
 </script>
 

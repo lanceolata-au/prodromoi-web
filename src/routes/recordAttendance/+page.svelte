@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { ApiResult } from "$lib/api/ApiResult";
     import type { AttendanceApi } from "$lib/api/AttendanceApi";
     import { member } from "$lib/model/member";
     import { memberAttendance } from "$lib/model/memberAttendance";
@@ -47,6 +48,16 @@
 
     storedMember.subscribe(member => {
         currentMember = member;
+    })
+
+    attendanceApi.result.subscribe((result) => {
+        if (result.resultCode !== 0 ) {
+            attendanceApi.result.set(new ApiResult())
+        }
+
+        if (result.resultCode === 200) {
+            goto("/confirmAttendance")
+        }
     })
 
     onMount(() => {
