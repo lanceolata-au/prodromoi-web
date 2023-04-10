@@ -32,6 +32,7 @@
     const sleep = (ms: number) => new Promise(f => setTimeout(f, ms));
 
     storedMember.subscribe((member) => {
+        if (localStorage.getItem("storedMember") === null) goto("/");
         currentMember = member;
     });
 
