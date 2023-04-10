@@ -48,15 +48,16 @@
     }
 
     function onScanSuccess(decodedText: string, decodedResult: Html5QrcodeResult) {
-        alert(`Code matched = ${decodedText}`)
-        console.log(decodedResult)
+        var splitter = "/recordAttendance/";
+        if (!decodedText.includes(splitter)) return;
+        goto(`/recordAttendance/${decodedText.split(splitter)[1]}`)
     }
 
     function onScanFailure(error: any) {
     }
 
     function getFromFriendlyCode() {
-        formationApi.getFromFriendlyCode("test")
+        formationApi.getFromFriendlyCode(manualCode)
     }
 
     formationApi.result.subscribe((result: ApiResult) => {
