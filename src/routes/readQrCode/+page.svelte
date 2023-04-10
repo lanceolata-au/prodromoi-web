@@ -2,7 +2,7 @@
     import { goto } from '$app/navigation';
     import type { FormationApi } from '$lib/api/FormationApi';
     import { ProdromoiApi } from '$lib/prodromoiApi';
-    import { ApiResult } from "$lib/api/ApiResult";
+    import type { ApiResult } from "$lib/api/ApiResult";
 
     // https://dev.to/myleftshoe/simple-qrbarcode-scanning-with-svelte-and-html5qrcode-1d59
     import { Html5Qrcode } from 'html5-qrcode';

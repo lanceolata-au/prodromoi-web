@@ -7,6 +7,7 @@
     import { member } from "$lib/model/member";
     import { memberAttendance } from "$lib/model/memberAttendance";
     import { quickAttendance } from "$lib/model/quickAttendance";
+    import { sectionType } from "$lib/model/sectionType.js";
     import  { ProdromoiApi } from "$lib/prodromoiApi";
     import { storedMember, apiLoading, checkinFormationSection } from "$lib/stores";
     import { onMount } from "svelte";
@@ -17,6 +18,7 @@
     var formationApi: FormationApi = api.formation;
     let currentMember: member = new member();
     let formationCheckin: formationSection = new formationSection();
+    let formationSectionName: string = "";
     let attendances: memberAttendance[] = [];
     let allChecked: boolean = true;
     
@@ -37,9 +39,30 @@
 
         if (result.resultCode === 200) {
             formationCheckin = result.resultBody as formationSection;
+            formationSectionName = getSectionName(formationCheckin.sectionType)
         }
 
     });
+
+    function getSectionName(section: sectionType): string {
+        console.log(section)
+        switch(section) {
+            case sectionType.Joeys:
+                return "Joeys"
+            case sectionType.Cubs:
+                return "Cubs"
+            case sectionType.Scouts:
+                return "Scouts"
+            case sectionType.Venturers:
+                return "Venturers"
+            case sectionType.Rovers:
+                return "Rovers"
+            case sectionType.Undefined:
+                return "Undefined"
+            default:
+                return "unknown"
+        }
+    }
 
     function addAttendances() {
         var attendance = new memberAttendance();
@@ -90,9 +113,12 @@
 
 </script>
 
-<div bind:this={listview} class="overflow-y-scroll h-[80%] mt-3">
+<div bind:this={listview} class="overflow-y-scroll h-[80%] mt-2">
     {#if formationCheckin.formation && formationCheckin.sectionType}
-        <h1 class="text-lg">{formationCheckin.formation.name} | {formationCheckin.sectionType.toString}</h1>
+    <div class="text-xl text-neutral bg-neutral-content/90 p-1 rounded text-center mb-2">
+        <h1>Group: {formationCheckin.formation.name}</h1>
+        <h1>Section: {formationSectionName}</h1>
+    </div>
     {/if}
     <table class="table w-full">
         <!-- head -->
