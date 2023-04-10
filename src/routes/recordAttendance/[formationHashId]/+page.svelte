@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { ApiResult } from "$lib/api/ApiResult";
     import type { AttendanceApi } from "$lib/api/AttendanceApi";
@@ -21,8 +22,6 @@
     let formationSectionName: string = "";
     let attendances: memberAttendance[] = [];
     let allChecked: boolean = true;
-    
-    
 
     onMount(() => {
         clearAttendances();
@@ -32,7 +31,9 @@
     const sleep = (ms: number) => new Promise(f => setTimeout(f, ms));
 
     storedMember.subscribe((member) => {
-        if (localStorage.getItem("storedMember") === null) goto("/");
+        if (browser && localStorage.getItem("storedMember") === null) {
+            goto("/");
+        }
         currentMember = member;
     });
 
