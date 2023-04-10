@@ -29,12 +29,8 @@
 
 <slot />
 <div class="absolute top-0 left-0 w-2/3 bg-transparent -z-50 max-h-full">
-    <!-- This is a background image -->
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <img src="bg/tl.png"/>
+    <img src="/bg/tl.webp" alt="background top left"/>
 </div>
 <div class="absolute bottom-0 right-0 w-2/3 bg-transparent -z-50 max-h-full">
-    <!-- This is a background image -->
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <img class="float-right" src="bg/br.png"/>
+    <img class="float-right" src="/bg/br.webp" alt="background bottom right"/>
 </div>

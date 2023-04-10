@@ -1,5 +1,5 @@
 export class ApiResult {
-    resultCode = 0
-    resultHeaders: Headers = new Headers();
-    resultBody = {}
+    public resultCode = 0
+    public resultHeaders: Headers = new Headers();
+    public resultBody = {};
 }

@@ -35,6 +35,12 @@ export class ApiCall {
             }
         }
 
+        this._result.subscribe((result: ApiResult) => {
+            if (result.resultCode !== 0 ) {
+                this._result.set(new ApiResult())
+            }
+        })
+
 
     }
 
@@ -54,15 +60,17 @@ export class ApiCall {
             apiResult.resultCode = httpResult.status;
             apiResult.resultHeaders = httpResult.headers;
 
-            if (apiResult.resultCode == 200) {
+            if (apiResult.resultCode === 200) {
                 
-                httpResult.json().then(data => {
+                httpResult.json().then((data) => {
                     apiResult.resultBody = data;
+                    this._result.set(apiResult)
+                    apiLoading.set(false);
                 });              
+            } else {
+                this._result.set(apiResult)
+                apiLoading.set(false);
             }
-
-            this._result.set(apiResult)
-            apiLoading.set(false);
 
         });
 
@@ -86,15 +94,18 @@ export class ApiCall {
             apiResult.resultCode = httpResult.status;
             apiResult.resultHeaders = httpResult.headers;
 
-            if (apiResult.resultCode == 200) {
-                
-                httpResult.json().then(data => {
+            if (apiResult.resultCode === 200) {                
+                httpResult.json().then((data) => {
                     apiResult.resultBody = data;
+                    this._result.set(apiResult)
+                    apiLoading.set(false);
                 });              
+            } else {
+                this._result.set(apiResult)
+                apiLoading.set(false);
             }
             
-            this._result.set(apiResult)
-            apiLoading.set(false);
+
 
         });
     }

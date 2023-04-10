@@ -2,23 +2,43 @@
     import { goto } from "$app/navigation";
     import { ApiResult } from "$lib/api/ApiResult";
     import type { AttendanceApi } from "$lib/api/AttendanceApi";
+    import type { FormationApi } from "$lib/api/FormationApi.js";
+    import { formationSection } from "$lib/model/formationSection";
     import { member } from "$lib/model/member";
     import { memberAttendance } from "$lib/model/memberAttendance";
     import { quickAttendance } from "$lib/model/quickAttendance";
     import  { ProdromoiApi } from "$lib/prodromoiApi";
-    import { storedMember, apiLoading } from "$lib/stores";
+    import { storedMember, apiLoading, checkinFormationSection } from "$lib/stores";
     import { onMount } from "svelte";
+    export let data;
 
     var api: ProdromoiApi = new ProdromoiApi();
     var attendanceApi: AttendanceApi = api.attendance
+    var formationApi: FormationApi = api.formation;
     let currentMember: member = new member();
+    let formationCheckin: formationSection = new formationSection();
     let attendances: memberAttendance[] = [];
     let allChecked: boolean = true;
+    
+    
+
+    onMount(() => {
+        clearAttendances();
+        formationApi.getFromHashId(data.formationHashId);
+    });
 
     const sleep = (ms: number) => new Promise(f => setTimeout(f, ms));
 
     storedMember.subscribe((member) => {
         currentMember = member;
+    });
+
+    formationApi.result.subscribe((result: ApiResult) => {
+
+        if (result.resultCode === 200) {
+            formationCheckin = result.resultBody as formationSection;
+        }
+
     });
 
     function addAttendances() {
@@ -43,26 +63,19 @@
         attendance.recordingAdult = currentMember;
         attendance.attendances = attendances;
 
-        attendanceApi.postQuickAttendance(attendance);
+        attendanceApi.postQuickAttendance(attendance, formationCheckin);
     }
 
-    storedMember.subscribe(member => {
-        currentMember = member;
-    })
+    attendanceApi.result.subscribe((result: ApiResult) => {
 
-    attendanceApi.result.subscribe((result) => {
+        if (result.resultCode === 200) {
+            //goto("/confirmAttendance")
+        }
+
         if (result.resultCode !== 0 ) {
             attendanceApi.result.set(new ApiResult())
         }
-
-        if (result.resultCode === 200) {
-            goto("/confirmAttendance")
-        }
     })
-
-    onMount(() => {
-        clearAttendances();
-    });
 
     let listview: Element;
 
@@ -78,6 +91,9 @@
 </script>
 
 <div bind:this={listview} class="overflow-y-scroll h-[80%] mt-3">
+    {#if formationCheckin.formation && formationCheckin.sectionType}
+        <h1 class="text-lg">{formationCheckin.formation.name} | {formationCheckin.sectionType.toString}</h1>
+    {/if}
     <table class="table w-full">
         <!-- head -->
         <thead>
