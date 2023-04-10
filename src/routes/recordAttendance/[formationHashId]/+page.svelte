@@ -92,7 +92,7 @@
     attendanceApi.result.subscribe((result: ApiResult) => {
 
         if (result.resultCode === 200) {
-            //goto("/confirmAttendance")
+            goto("/confirmAttendance")
         }
 
         if (result.resultCode !== 0 ) {
