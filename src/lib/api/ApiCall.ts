@@ -1,19 +1,22 @@
 import { ApiResult } from "./ApiResult";
-
-import { writable, type Writable } from 'svelte/store';
 import { apiLoading } from "../stores";
+import type { Writable } from "svelte/store";
 
 export class ApiCall {
 
     readonly _bearerToken: string| null;
     readonly _httpHost: string;
+    readonly _result: Writable<ApiResult>;
     _headers = {};
     
-    constructor(bearerToken: string | null = null, httpHost: string) {
+    constructor(
+        bearerToken: string | null = null, 
+        httpHost: string,
+        result: Writable<ApiResult>) {
         
         this._bearerToken = bearerToken
-        
         this._httpHost = httpHost;
+        this._result = result;
 
         if (this._bearerToken != null) {
             this._headers = {
@@ -32,10 +35,16 @@ export class ApiCall {
             }
         }
 
+        this._result.subscribe((result: ApiResult) => {
+            if (result.resultCode !== 0 ) {
+                this._result.set(new ApiResult())
+            }
+        })
+
 
     }
 
-    async getEndpoint<T extends ApiResult>(endpoint: string) {
+    getEndpoint(endpoint: string) {
         
         apiLoading.set(true);
 
@@ -47,24 +56,27 @@ export class ApiCall {
 
         let fullEndpoint = "https://" + this._httpHost + "/" + endpoint
 
-        let rawResult = await fetch(fullEndpoint, requestOptions)
+        fetch(fullEndpoint, requestOptions).then((httpResult) => {
+            apiResult.resultCode = httpResult.status;
+            apiResult.resultHeaders = httpResult.headers;
 
-        apiResult.resultCode = rawResult.status;
-        apiResult.resultHeaders = rawResult.headers;
+            if (apiResult.resultCode === 200) {
+                
+                httpResult.json().then((data) => {
+                    apiResult.resultBody = data;
+                    this._result.set(apiResult)
+                    apiLoading.set(false);
+                });              
+            } else {
+                this._result.set(apiResult)
+                apiLoading.set(false);
+            }
 
-        if (apiResult.resultCode == 200) {
-            await rawResult.json().then(data => {
-                apiResult.resultBody = data as T;
-            }); 
-        }
-
-        apiLoading.set(false);
-
-        return apiResult;
+        });
 
     }
 
-    async postEndpoint<R extends ApiResult>(endpoint: string, body: any) {
+    postEndpoint(endpoint: string, body: any) {
         
         apiLoading.set(true);
 
@@ -78,22 +90,30 @@ export class ApiCall {
 
         let fullEndpoint = "https://" + this._httpHost + "/" + endpoint
 
-        let rawResult = await fetch(fullEndpoint, requestOptions)
+        fetch(fullEndpoint, requestOptions).then((httpResult) => {
+            apiResult.resultCode = httpResult.status;
+            apiResult.resultHeaders = httpResult.headers;
 
-        apiResult.resultCode = rawResult.status;
-        apiResult.resultHeaders = rawResult.headers;
+            if (apiResult.resultCode === 200) {                
+                httpResult.json().then((data) => {
+                    apiResult.resultBody = data;
+                    this._result.set(apiResult)
+                    apiLoading.set(false);
+                });              
+            } else {
+                this._result.set(apiResult)
+                apiLoading.set(false);
+            }
+            
 
-        if (apiResult.resultCode == 200) {
-            await rawResult.json().then(data => {
-                apiResult.resultBody = data as R;
-            }); 
-        }
 
-        apiLoading.set(false);
-
-        return apiResult;
-
+        });
     }
 
+
+    // sleep time expects milliseconds
+    private sleep(time: number) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
 
 }
