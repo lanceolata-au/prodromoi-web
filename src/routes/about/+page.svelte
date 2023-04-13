@@ -23,5 +23,5 @@
     Souce fully avaliable: 
     <br>
     <a class="underline text-primary-focus" href="https://github.com/lanceolata-au/prodromoi-api">API Souces</a> & 
-    <a class="underline text-primary-focus" href="https://github.com/lanceolata-au/prodromoi-api">Web Souces</a>
+    <a class="underline text-primary-focus" href="https://github.com/lanceolata-au/prodromoi-web">Web Souces</a>
 </div>
