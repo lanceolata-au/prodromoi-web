@@ -1,5 +1,5 @@
 # stage build
-FROM node:16-alpine
+FROM node:19-slim
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build
 
 
 # stage run
-FROM node:16-alpine
+FROM node:19-slim
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ WORKDIR /app
 COPY --from=0 /app/package*.json ./
 
 # clean install dependencies, no devDependencies, no prepare script
-RUN npm ci --production --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
 
 # remove potential security issues
 RUN npm audit fix
